@@ -1,0 +1,7 @@
+#!/bin/bash
+
+git co origin/main -- .
+sed -i "s/WAID\=.*/WAID=\"SET YOUR OWN ID\"/g" $HOME/.bashrc
+#cat $HOME/.gitconfig | grep -v "\[user\]" | grep -v "email\s*=\s*" | grep -v "name\s*=\s*" > $HOME/.gitconfig
+git a
+git c
