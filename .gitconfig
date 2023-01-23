@@ -8,13 +8,15 @@
 	s = status
 	ss = "!f() { git s | sed \"s/^/#/\"; }; f;"
 	sh = show
-	shs = "!f() { git sh $(gs \"$1\"); }; f;"
+	shs = "!f() { git sh $(gs \"$1\"); }; f"
+	shso = "!f() { git sh $(gs \"$1\") \"$2\"; }; f"
 	cp = cherry-pick
 	b = branch
 	co = checkout
 	a = "!f() { git add . ; git s; }; f;"
 	showconfig = config --global --show-origin --list
 	c = commit
+	cos = "!f() { git co $(gs \"$1\"); git ls; }; f"
 	cm = "!f() { git commit -m \"$1\"; }; f"
 	now = commit --amend --reset-author --no-edit
 	cam = commit --amend --no-edit
@@ -22,6 +24,7 @@
 	bd ="!f() { git b | grep -v '^*.*' | xargs git b -D; }; f"
 	wc = whatchanged
 	wcn = "!f() { git wc head~\"$1\"..head; }; f"
+	del = "!f() { git co --detach; git push origin :\"$1\"; git b -D \"$1\"; git co -; git ls;}; f"
 	
 	# reset
 	res = reset --soft
@@ -33,6 +36,7 @@
 	# rebase
 	ri = "!f() { git rebase -i \"$1\"; }; f"
 	rs = "!f() { git restore --staged \"$1\"; git s; }; f"
+	rin = "!f() { git ri head~\"$1\"; }; f"
 	ris = "!f() { git ri $(gs \"$1\")~1; }; f"
 	
 	# restore
@@ -43,6 +47,9 @@
 	cxY = clean -f -d -X	
 	cxx = clean -n -d -x
 	cxxY = clean -f -d -x
+	replaceissues = "!f() { replace_issues \"$1\"; }; f"
+	filterbranch = "!f() { filter_branch \"$1\" \"$2\" \"$3\"; }; f"
+
 
 	# remote stuff
 	po = push -u origin head
@@ -54,7 +61,6 @@
 	
 
 	# testing
-	del = "!f() { git co --detach; git push origin :\"$1\"; git b -D \"$1\"; git co -; git ls;}; f"
 	test = "!f() { git co \"$1\"; git co -b test_\"$1\"; git b; }; f"
 	testP = "!f() { git test \"$1\"; git po; git b; }; f"
 

@@ -4,8 +4,62 @@ if [ -e $HOME/.bash_aliases ]; then
 fi
 
 ################################################################################
+# Terminal coloring
+
+function da_weava {
+	#local weather="$(wa "time")"
+	#local weather="$(date +"%T")"
+	local weather="$(wa "temperature here" | grep -oP "\d+ degrees")"
+	echo "$weather" > "$HOME/.dump"
+	if [ -n "$weather" ] && [ ! $(echo "$weather" | grep -q "DOC") ]; then
+		echo -n "$weather" > "$HOME/.weava"
+	else
+		if [ -f "$HOME/.weava" ]; then
+			cat "$HOME/.weava" | xargs echo -n | perl -pe 's/(?<!\(old\))$/ (old)/' > "$HOME/.weava"
+		fi
+	fi
+}
+parse_git_branch() {
+     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+function da_weava_f {
+	(da_weava &)
+}
+
+PROMPT_COMMAND=da_weava_f
+
+function get_funnies {
+	if [ -f "$HOME/.weava" ]
+	then
+		echo " [$(cat $HOME/.weava)]"
+	fi
+}
+
+#https://ss64.com/bash/syntax-prompt.html
+#https://bashrcgenerator.com/
+function color_my_prompt {
+    local __time="\[\033[38;5;139m\]\@"
+    local __user_and_host="\[\033[38;5;2m\]\u"
+    local __cur_location="\[\033[38;5;3m\]\w"
+    local __git_branch_color="\[\033[38;5;6m\]"
+    local __weava_color='\[\033[38;5;9m\]'
+    local __prompt_tail="\[\033[35m\]$ "
+    local __last_color="\[\033[00m\]"
+    export PS1="$__time$__weava_color\$(get_funnies) $__cur_location$__git_branch_color\$(parse_git_branch)$__prompt_tail$__last_color"
+    
+}
+color_my_prompt
+
+################################################################################
+# Env variables
+
+# Beware...
+export FILTER_BRANCH_SQUELCH_WARNING=1
+
+################################################################################
 # Program aliases 
 alias g='git'
+alias v="vim"
 alias rg='"C:/Program Files (x86)/FANUC/ROBOGUIDE/bin/ROBOGUIDE.exe"'
 
 alias new='start "" "C:\Program Files\Git\git-bash.exe"'
@@ -14,7 +68,6 @@ alias nx='new && exit'
 alias pn='plcncli generate all && plcncli build && plcncli deploy'
 
 alias see='cd "c:/Users/Public/Documents/IGE+XAO/SEE Electrical/V8R3"'
-
 ################################################################################
 # SEE Electrical start
 alias ses='ls | grep ".sep" | xargs start' 
@@ -26,7 +79,7 @@ alias cls='ls | grep ".ckp" | xargs start'
 alias cms='ls | grep ".eap9" | xargs start'
 
 # AB Start
-alias sfs='ls | grep -i ".ACD" | grep -v "BAK" | xargs start'
+alias sfs='ls | grep -iE "\.ACD$" | grep -v "BAK" | xargs start'
 
 # ROBOGUIDE start
 alias rgs='ls content | grep ".frw" | xargs -I {} sh -c "start content/{}"'
@@ -52,8 +105,6 @@ alias po="cd '$EPATH/Purchase Orders'"
 
 ################################################################################
 
-
-
 # Personal Excel File directory/name
 EXL_FILE="PERSONAL.xlsb"
 EXL_DIR="$HOME/AppData/Roaming/MicroSoft/Excel/XLSTART/$EXL_FILE"
@@ -61,6 +112,42 @@ EXL_DIR="$HOME/AppData/Roaming/MicroSoft/Excel/XLSTART/$EXL_FILE"
 declare -A repos=(["m"]="maccopacco" ["j"]="jmc-industries")
 
 ################################################################################
+
+# FUNCTIONS
+
+#function unzip {
+#	"C:\Program Files\7-Zip\7z.exe" x $1
+#}
+#
+function zip { 
+	"C:\Program Files\7-Zip\7z.exe" a $1 $2
+}
+
+function replace_issues {
+	git filterbranch 'perl -pe "s/([ \(])(\d+)([ \)]?)/\$1#\$2\$3/g"' $1
+}
+
+function filter_branch {
+	ex="git filter-branch --prune-empty --msg-filter '$1' $2 $3"
+	eval "$ex" 
+	git show-ref | grep -oP "[a-z0-9]+ \Krefs\/original.*" | xargs -L1 git update-ref -d
+	git ls
+}
+
+function gworktree {
+	PTH="../$(basename $PWD)_test"
+	echo $PTH
+	new
+	git worktree add $PTH
+	cd "$PTH"
+}
+
+function kgworktree {
+	PTH="../$(basename $PWD)_test"
+	git worktree remove $PTH --force
+}
+
+
 function sfw {
 	if [ "$(tasklist | grep -i "LogixDesigner.exe")" != "" ] 
 	then
@@ -251,7 +338,7 @@ function rgz {
 	rgw
 	echo "Zipping RG"
 	rm content.zip
-	"C:\Program Files\7-Zip\7z.exe" a content.zip content/
+	zip content.zip content/
 }
 
 # Roboguide unzip
@@ -259,7 +346,7 @@ function rguz {
 	rgw
 	echo "Unzipping RG"
 	rm content -rf
-	"C:\Program Files\7-Zip\7z.exe" x content.zip
+	unzip content.zip
 }
 
 
@@ -363,3 +450,5 @@ export -f wa
 export -f ws
 export -f gs
 export -f sp
+export -f filter_branch 
+export -f replace_issues 
