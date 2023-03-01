@@ -79,7 +79,9 @@ alias cls='ls | grep ".ckp" | xargs start'
 alias cms='ls | grep ".eap9" | xargs start'
 
 # AB Start
-alias sfs='ls | grep -iE "\.ACD$" | grep -v "BAK" | xargs start'
+alias _sfs='ls | grep -iE "\.ACD$" | grep -v "BAK"'
+alias sfs='_sfs | head -n 1 | xargs start'
+alias sfsl='_sfs | tail -n 1 | xargs start'
 
 # ROBOGUIDE start
 alias rgs='ls content | grep ".frw" | xargs -I {} sh -c "start content/{}"'
