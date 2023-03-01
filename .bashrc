@@ -83,6 +83,11 @@ alias _sfs='ls | grep -iE "\.ACD$" | grep -v "BAK"'
 alias sfs='_sfs | head -n 1 | xargs start'
 alias sfsl='_sfs | tail -n 1 | xargs start'
 
+# CSV Start
+alias _csvs='ls | grep -iE "\.CSV$"'
+alias csvs='_csvs | head -n 1 | xargs start'
+alias csvsl='_csvs | tail -n 1 | xargs start'
+
 # ROBOGUIDE start
 alias rgs='ls content | grep ".frw" | xargs -I {} sh -c "start content/{}"'
 
