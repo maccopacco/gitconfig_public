@@ -134,6 +134,11 @@ function replace_issues {
 	git filterbranch 'perl -pe "s/([ \(])(\d+)([ \)]?)/\$1#\$2\$3/g"' $1
 }
 
+# Args: 
+# command
+#	'sed "1s/$/ (31)'
+# commit-ish range
+#	main..head	
 function filter_branch {
 	ex="git filter-branch --prune-empty --msg-filter '$1' $2 $3"
 	eval "$ex" 

@@ -15,4 +15,7 @@
 !won.*
 !woff.*
 
+!sysexp
+!sysexp/*
+
 !PERSONAL.xlsb
