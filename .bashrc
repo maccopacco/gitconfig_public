@@ -62,6 +62,7 @@ alias g='git'
 alias v="vim"
 alias rg='"C:/Program Files (x86)/FANUC/ROBOGUIDE/bin/ROBOGUIDE.exe"'
 
+alias syex='start $HOME/sysexp/sysexp.exe'
 alias new='start "" "C:\Program Files\Git\git-bash.exe"'
 alias nx='new && exit'
 
@@ -90,6 +91,7 @@ alias csvsl='_csvs | tail -n 1 | xargs start'
 
 # ROBOGUIDE start
 alias rgs='ls content | grep ".frw" | xargs -I {} sh -c "start content/{}"'
+
 
 ################################################################################
 # Start this
