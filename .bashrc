@@ -124,6 +124,14 @@ declare -A repos=(["m"]="maccopacco" ["j"]="jmc-industries")
 
 # FUNCTIONS
 
+function sfsdiff {
+	PTH="../$(basename $PWD)_diff"
+	git worktree add "$PTH" --detach head~1 
+	RSLCompare $1 ../$PTH/$1 compare.compare
+	git worktree remove $PTH
+	start compare.compare
+}
+
 #function unzip {
 #	"C:\Program Files\7-Zip\7z.exe" x $1
 #}
