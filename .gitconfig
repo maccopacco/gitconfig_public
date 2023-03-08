@@ -25,6 +25,7 @@
 	wc = whatchanged
 	wcn = "!f() { git wc head~\"$1\"..head; }; f"
 	del = "!f() { git co --detach; git push origin :\"$1\"; git b -D \"$1\"; git co -; git ls;}; f"
+	wt = worktree
 	
 	# reset
 	res = reset --soft

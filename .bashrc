@@ -125,7 +125,7 @@ declare -A repos=(["m"]="maccopacco" ["j"]="jmc-industries")
 # FUNCTIONS
 
 function sfsfix {
-	sfs && new && sfsdiffhead1 && beep && git ca && exit
+	(sfs || true) && new && sfsdiffhead1 && beep && git ca && sleep 10 && exit
 }
 
 function sfsdiffhead1 { 
@@ -172,15 +172,15 @@ function filter_branch {
 	git ls
 }
 
-function gworktree {
+function gwt {
 	PTH="../$(basename $PWD)_test"
 	echo $PTH
 	new
-	git worktree add $PTH
+	git worktree add $PTH --detach head
 	cd "$PTH"
 }
 
-function kgworktree {
+function kgwt {
 	PTH="../$(basename $PWD)_test"
 	git worktree remove $PTH --force
 }
