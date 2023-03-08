@@ -124,12 +124,20 @@ declare -A repos=(["m"]="maccopacco" ["j"]="jmc-industries")
 
 # FUNCTIONS
 
+function sfsdiffhead1 { 
+	sfsdiff head head~1 $(_sfs | head -n 1)
+}
+
 function sfsdiff {
-	PTH="../$(basename $PWD)_diff"
-	git worktree add "$PTH" --detach head~1 
-	RSLCompare $1 ../$PTH/$1 compare.compare
-	git worktree remove $PTH
+	PTH1="../$(basename $PWD)_diff_1"
+	PTH2="../$(basename $PWD)_diff_2"
+	git worktree add "$PTH1" --detach $1
+	git worktree add "$PTH2" --detach $2
+	time RSLCompare "$PTH1/$3" "$PTH2/$3" compare.compare
+	git worktree remove $PTH1
+	git worktree remove $PTH2
 	start compare.compare
+	#time RSLCompare compare.compare compare.pdf
 }
 
 #function unzip {
