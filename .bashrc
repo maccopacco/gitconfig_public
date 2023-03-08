@@ -125,7 +125,7 @@ declare -A repos=(["m"]="maccopacco" ["j"]="jmc-industries")
 # FUNCTIONS
 
 function sfsfix {
-	(sfs || true) && new && sfsdiffhead1 && beep && git ca && sleep 10 && exit
+	(sfs || true) && new && sfsdiffhead1 && beep && git ca && git ls && sleep 10 && exit
 }
 
 function sfsdiffhead1 { 
