@@ -1,0 +1,12 @@
+#!/bin/bash
+
+git co public
+git co main -- .
+sed -i "s/WAID\=.*/WAID=\"SET YOUR OWN ID\"/g" $HOME/.bashrc
+#cat $HOME/.gitconfig | grep -v "\[user\]" | grep -v "email\s*=\s*" | grep -v "name\s*=\s*" > $HOME/.gitconfig
+git a
+git rs "$HOME/.bash_aliases"
+git cm "Update"
+git r .
+git p
+git co main

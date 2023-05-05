@@ -1,0 +1,123 @@
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[alias]
+	# basics
+	#s = "!f() { git status; echo \"again\" >> $HOME/count.txt; }; f;" # just a hate based tangent don't worry about it
+	s = status
+	r = "!f() { git restore \"$1\"; git s; }; f"
+	rs = "!f() { git restore --staged \"$1\"; git s; }; f"
+	d = diff
+	ds = diff --staged
+	ss = "!f() { git s | sed \"s/^/#/\"; }; f;"
+
+	# shows
+	sh = show
+	shs = "!f() { git sh $(gs \"$1\") ${@:2}; }; f"
+	shh = "!f() { git sh head $@; }; f"
+
+	# branches 
+	b = branch
+	bd ="!f() { git b | grep -v '^*.*' | xargs git b -D; }; f"
+	co = checkout
+	cos = "!f() { git co $(gs \"$1\") ${@:2} ; git ls; }; f"
+	con = "!f() { git co head~\"$1\" ${@:2}; }; f"
+
+	showconfig = config --global --show-origin --list
+
+	# commits
+	a = "!f() { git add . ; git s; }; f;"
+	c = commit
+	cm = "!f() { git commit -m \"$1\"; }; f"
+	now = commit --amend --reset-author --no-edit
+	cam = commit --amend --no-edit
+	ca = commit --amend
+	cp = cherry-pick
+	cps = "!f() { git cp $(gs \"$1\"); }; f"
+
+
+	# what changed
+	wc = whatchanged
+	wcn = "!f() { git wc head~\"$1\"..head; }; f"
+	wch = "!f() { git wcn 1; }; f"
+	wcc = "!f() { git wc \"$1\"~1..\"$1\"; }; f"
+	wco = "!f() { git wc \"origin/$(git revn head)\"..head; }; f"
+	del = "!f() { git co --detach; git push origin :\"$1\"; git b -D \"$1\"; git co -; git ls;}; f"
+
+	# worktrees
+	wt = worktree
+	kwt = "!f() { gwtrm; git wtl; }; f"
+	wtl = wt list
+	
+	# reset
+	res = reset --soft
+	rem = reset --mixed
+	reh = reset --hard	
+	reho = "!f() { git reh ""origin/$(git revn head)""; }; f"
+
+	# rev parsing
+	rev = rev-parse --short
+	revn = rev-parse --abbrev-ref 
+	
+
+	# rebase
+	ri = "!f() { git rebase -i \"$1\"; }; f"
+	ra = rebase --abort
+	rc = rebase --continue
+	reto = rebase --edit-todo
+	rin = "!f() { git ri head~\"$1\"; }; f"
+	ris = "!f() { git ri $(gs \"$1\")~1; }; f"
+	rio = "!f() { git ri ""origin/$(git revn head)""; }; f"
+	
+	
+	#cleaning	
+	cx = clean -n -d -X
+	cxY = clean -f -d -X	
+	cxx = clean -n -d -x
+	cxxY = clean -f -d -x
+	replaceissues = "!f() { replace_issues \"$1\"; }; f"
+	filterbranch = "!f() { filter_branch \"$1\" \"$2\" \"$3\"; }; f"
+
+
+	# remote stuff
+	po = push -u origin head
+	p = push
+
+	# clone
+	cl = clone
+	cls = clone --recurse-submodules
+	
+
+	# testing
+	test = "!f() { git co \"$1\"; git co -b test_\"$1\"; git b; }; f"
+	testP = "!f() { git test \"$1\"; git po; git b; }; f"
+
+	# hide/show tags
+	notag = "!f() { git tag | xargs git tag -d; }; f"
+	tags = fetch --tags
+	doneWith = "!f() { _doneWith \"$1\"; }; f"
+	doneWithR = "!f() { _doneWithR \"$1\" \"$2\"; }; f"
+	
+	# hide
+	hide = update-index --assume-unchanged
+	unhide = update-index --no-assume-unchanged
+	showhidden = !"git ls-files -v|grep \"^h\""
+	
+	# log
+	lg1 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+	lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
+	lg = lg1
+	ls = lg -n 20
+[user]
+	email = maxdmax101@gmail.com
+	name = maccopacco
+[safe]
+	directory = C:/Users/Public/Documents/IGE+XAO/SEE Electrical/V8R3/Templates
+	directory = C:/Users/Public/Documents/IGE+XAO/SEE Electrical/V8R3
+	directory = C:/Users/programming/Documents/2108_sysmac_test
+[credential "http://www.github.com"]
+	provider = github
+[push]
+	autoSetupRemote = true
