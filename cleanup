@@ -7,6 +7,5 @@ sed -i "s/WAID\=.*/WAID=\"SET YOUR OWN ID\"/g" $HOME/.bashrc
 git a
 git rs "$HOME/.bash_aliases"
 git cm "Update"
-git r .
 git p
-git co main
+git co main --force
