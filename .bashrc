@@ -569,15 +569,24 @@ function gbrowse {
 }
 
 function gissue {
+	gi="$(git config --get remote.origin.url)/issues?q=is%3Aissue+is%3Aopen"
 	head="$(git revn head)"
 	maybe_branches="$(echo "$head" | grep -oP "^[\d_]+$")"
-	echo "$maybe_branches"
-
 	if [ -z "$maybe_branches" ]
 	then
 		gissues
 	else
-		echo "$maybe_branches" | grep -oP "\d+" | xargs -I {} sh -c 'gissues "/{}"'
+		branches="$(echo "$maybe_branches" | grep -oP "\d+" | xargs -L1 echo)" 
+		count=$(echo "$branches" | cat -n | tail -n 1 | grep -oP "^\s+\d+" | grep -oP "[^\s]+")
+		if [[ ! -z "$1" ]]
+		then
+			if [[ $count -gt 1 ]]
+			then
+				query="$(echo "$branches" | sed -E 's/^/+/g' | paste -sd '' -)"
+				start "$gi$query"
+			fi
+		fi
+		echo "$branches" | xargs -I {} sh -c 'gissues "/{}"'
 	fi
 }
 
@@ -588,7 +597,7 @@ function gissues {
 	then
 		gi="$gi$1"
 	fi
-	printf "$gi"
+	echo "$gi"
 	start $gi
 }
 
