@@ -35,6 +35,8 @@
 	cam = commit --amend --no-edit
 	ca = commit --amend
 	cp = cherry-pick
+	cpa = cp --abort
+	cpc = cp --continue
 	cps = "!f() { git cp $(gs \"$1\"); }; f"
 
 
@@ -56,6 +58,7 @@
 	rem = reset --mixed
 	reh = reset --hard	
 	reho = "!f() { git reh ""origin/$(git revn head)""; }; f"
+	rehn = "!f() { git reh \"$(git revn head)~1\"; }; f"
 
 	# rev parsing
 	rev = rev-parse --short

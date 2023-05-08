@@ -586,7 +586,10 @@ function gissue {
 				start "$gi$query"
 			fi
 		fi
-		echo "$branches" | xargs -I {} sh -c 'gissues "/{}"'
+		if [[ "$#" -eq 0  || ! "$1" -eq "o" ]]
+		then
+			echo "$branches" | xargs -I {} sh -c 'gissues "/{}"'
+		fi
 	fi
 }
 
